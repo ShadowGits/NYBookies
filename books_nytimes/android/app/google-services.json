@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "997928162490",
+    "firebase_url": "https://snapclone-bf11e.firebaseio.com",
+    "project_id": "snapclone-bf11e",
+    "storage_bucket": "snapclone-bf11e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997928162490:android:7c8cd54e73386564e69e83",
+        "android_client_info": {
+          "package_name": "com.sparry.books_nytimes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997928162490-fjb9nsd1spia75eaqk8l8mr5k4tmbcvu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sparry.books_nytimes",
+            "certificate_hash": "494f2b7ad6036a82cf9c3ce6d4f04e58140d4733"
+          }
+        },
+        {
+          "client_id": "997928162490-f538uno8h99pr37ofc2anitp208qfclk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNJYgJ2Drk5XVznxVHKOJqRfeBZoCpm3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997928162490-f538uno8h99pr37ofc2anitp208qfclk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
