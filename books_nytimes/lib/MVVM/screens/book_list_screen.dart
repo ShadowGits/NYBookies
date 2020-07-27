@@ -148,7 +148,7 @@ class _BookListScreenState extends State<BookListScreen>
               ),
             ),
             Container(
-              height: 75 * Constants.heightBlockSize,
+              height: 70 * Constants.heightBlockSize,
               width: 100 * Constants.widthBlockSize,
               child: ListView.builder(
                 itemBuilder: (context, index) {
