@@ -5,6 +5,7 @@ import 'package:books_nytimes/MVVM/viewmodels/book_list_view_model.dart';
 import 'package:books_nytimes/MVVM/viewmodels/book_type_view_model.dart';
 import 'package:books_nytimes/MVVM/viewmodels/book_view_model.dart';
 import 'package:books_nytimes/MVVM/widgets/padded_list_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +28,16 @@ class _BookListScreenState extends State<BookListScreen>
   BookListViewModel model;
   String selectedCategory;
 
-  List<int> indexLiked = [];
+  List<String> likedIsbns = [];
+  Firestore _firestoreInstance;
+  DocumentReference documentRef;
 
   @override
   void initState() {
+    _firestoreInstance = Firestore.instance;
+    documentRef =
+        _firestoreInstance.collection("users").document(widget.user.email);
+
     super.initState();
     model = Provider.of<BookListViewModel>(context, listen: false);
     model.updatedBookCategories();
@@ -148,22 +155,35 @@ class _BookListScreenState extends State<BookListScreen>
                   return Row(
                     children: [
                       IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.solidHeart,
-                          color: indexLiked.contains(index)
-                              ? Colors.red
-                              : Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            if (indexLiked.contains(index)) {
-                              indexLiked.remove(index);
+                          icon: Icon(
+                            FontAwesomeIcons.solidHeart,
+                            color: likedIsbns.contains(books[index].primaryISBN)
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                          onPressed: () async {
+                            String isbn = books[index].primaryISBN;
+                            if (likedIsbns.contains(isbn)) {
+                              likedIsbns.remove(isbn);
                             } else {
-                              indexLiked.add(index);
+                              likedIsbns.add(isbn);
                             }
-                          });
-                        },
-                      ),
+                            _firestoreInstance
+                                .runTransaction((transaction) async {
+                              transaction.update(
+                                  documentRef, {"liked_isbns": likedIsbns});
+                            });
+                            setState(() {});
+                          }
+//                          setState(() {
+//                            if (indexLiked.contains(index)) {
+//                              indexLiked.remove(index);
+//                            } else {
+//                              indexLiked.add(index);
+//                            }
+//                          });
+//                        },
+                          ),
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
@@ -213,6 +233,8 @@ class _BookListScreenState extends State<BookListScreen>
     selectedCategory = preferences.getString("bookType") ?? "hardcover-fiction";
     model.fetchedCurrentBooks(selectedCategory);
     books = model.books;
+
+    getLikedIsbnsFireStore();
     print("then here");
   }
 
@@ -223,6 +245,7 @@ class _BookListScreenState extends State<BookListScreen>
         print(selected);
         await preferences.setString("bookType", selected);
 
+        getLikedIsbnsFireStore();
         setState(() {
           selectedCategory = selected;
           model.loadingStatusBookData = CategoryLoadingStatus.loading;
@@ -242,5 +265,12 @@ class _BookListScreenState extends State<BookListScreen>
         );
       },
     );
+  }
+
+  void getLikedIsbnsFireStore() async {
+    _firestoreInstance.runTransaction((transaction) async {
+      var snapshot = await transaction.get(documentRef);
+      likedIsbns = List<String>(snapshot.data["liked_isbns"]);
+    });
   }
 }
